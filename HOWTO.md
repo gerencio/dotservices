@@ -36,8 +36,8 @@ Para despachar as units é bem simples, o comando descrito abaixo roda cada uma 
   # systemctl start zoopkeeper.service
   # systemctl start mesos-master.service
   # systemctl start mesos-slave.service
-  # systemctl start chronos.service
   # systemctl start marathon.service
+  # systemctl start chronos.service
 ```
 
 Porém, vai ser necessário atualizar os arquivos .service para a realidade em questão, alterar IPs, diretórios de volumes, entre outras coisas, para se adaptar ao ambiente que está sendo utilizado.
