@@ -1,0 +1,36 @@
+[Unit]
+Description=mesos-master.service
+After=zookeeper.service
+Requires=zookeeper.service
+
+[Service]
+ExecStartPre=-/usr/bin/docker kill mesos-master
+ExecStartPre=-/usr/bin/docker rm mesos-master
+ExecStartPre=-/usr/bin/docker pull  xdevelsistemas/mesosphere-docker:mesos-master
+ExecStart=/usr/bin/docker run \
+	--rm \
+	--name mesos-master \
+	--net="host" \
+	-p 5050:5050 \
+	-m 500M --memory-swap -1 \
+	-v /home/core/dockerdata/conf/credentials:/credentials:ro  \
+	-v /home/core/dockerdata/mesos-master/hdfs:/tmp/hsperfdata_root \
+	-v /home/core/dockerdata/mesos-master:/tmp/mesos \
+	-v /home/core/config:/config  \
+	-e ZOOKEEPER_DATADIR=/var/lib/zookeeper \
+	-e "MESOS_HOSTNAME=172.31.200.174" \
+	-e "MESOS_IP=172.31.200.174" \
+	-e MESOS_ZK=zk://172.31.200.174:2181/mesos \
+	-e MESOS_PORT=5050 \
+	-e MESOS_QUORUM=1  \
+	-e MESOS_LOG_DIR="/var/log/mesos" \
+	-e "MESOS_CREDENTIALS=/credentials" \
+	-e "MESOS_AUTHENTICATE=true"  \
+	-e "MESOS_AUTHENTICATE_SLAVES=true" \
+	-e MESOS_CLUSTER=ish-cluster \
+	xdevelsistemas/mesosphere-docker:mesos-master 
+ExecStop=/usr/bin/docker stop mesos-master
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
