@@ -47,15 +47,25 @@ Como vamos utilizar apenas uma instância do Zookeeper, este pode ficar do jeito
 
 #### Mesos Master
 No script mesos master devemos no atentar para as seguintes variáveis de ambiente (são aquelas que são especificados dentro dos parentêses), e para os volumes, pois devemos colocar as credenciais neles.
+
 1. "MESOS\_HOSTNAME": é o nome do Host, nenhum grande impacto, mas serve para diferenciar os hosts; TODO
+ 
 2. "MESOS\_IP": é o IP da máquina que está sendo executado o script; TODO
+
 3. "MESOS\_ZK": É um endereço do Zookeeper, formatado do jeito que está no arquivo. Ele serve para registrar o Mesos no Zookeeper, para ser facilmente acessado depois;
+
 4. "MESOS\_PORT": Porta padrão que o mesos irá expor para se comunicar;
+
 5. "MESOS\_QUORUM": TODO
+
 6. "MESOS\_LOG\_DIR": diretório para aonde será escrito os logs do Mesos;
+
 7. "MESOS\_CREDENTIALS": Diretório o qual estão as credenciais do Mesos;
+
 8. "MESOS\_AUTHENTICATE": Condicional para autenticação geral do mesos;
+
 9. "MESOS\_AUTHENTICATE\_SLAVES": Condicional para autenticação de Slaves no Master do Mesos;
+
 10. "MESOS\_CLUSTER": Nome do cluster que está rodando o Mesos.
 
 #### Mesos Slave
