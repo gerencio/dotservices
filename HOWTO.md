@@ -36,6 +36,8 @@ Para despachar as units é bem simples, o comando descrito abaixo roda cada uma 
   # systemctl start zoopkeeper.service
   # systemctl start mesos-master.service
   # systemctl start mesos-slave.service
+  # systemctl start chronos.service
+  # systemctl start marathon.service
 ```
 
 Porém, vai ser necessário atualizar os arquivos .service para a realidade em questão, alterar IPs, diretórios de volumes, entre outras coisas, para se adaptar ao ambiente que está sendo utilizado.
@@ -61,3 +63,9 @@ Muito semelhante ao script do Mesos-Master, algumas diferenças tem que ser cons
 1. A variável de ambiente **MESOS\_MASTER** é passada como um endereço do Zookeeper, pois assim fica mais fácil identificar os IPs de uma rede, centralizando o conhecimento dos IPs;
 2. **MESOS\_PORT** é uma diferente (no caso 5051) pois estamos executando em uma mesma máquina, caso estejamos executando em máquinas diferentes, não tem nenhum problema ela ser 5050, inclusive, esse é o padrão;
 4. O resto das variáveis de ambiente são otimizadas para rodar no Linux sob o Docker.
+
+#### Marathon
+Deverá se atentar apenas para as variáveis **MARATHON\_HTTP\_PORT** que é a porta que será exposta, para não acontecer nenhum conflito com outra, e o endereço do Mesos-Master, que é descrito em **MARATHON\_MASTER**, que também é um endereço do Zookeeper.
+
+#### Chronos
+Além das considerações acima, deverá também ser levado em conta as variáveis que remetem ao email.
