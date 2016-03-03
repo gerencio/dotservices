@@ -12,23 +12,23 @@ How to use
 example:
 
 
-'''
+```bash
 Environment=VERONICA_DOCKER_VERSION=0.1
 Environment=CLUSTER=<YOUR CLUSTER NAME> 
 Environment=ZOOKEEPER_ENDPOINT=zk://<YOUR-DOMAIN>:2181
 Environment=HOSTNAME=<YOUR-DOMAIN>
 Environment=MOUNTPOINT=<WHERE YOU PUT "dockerdata" FILE>
-'''
+```
 
 change for this:
 
-'''
+```bash
 Environment=VERONICA_DOCKER_VERSION=0.1
 Environment=CLUSTER=my-power-super-cluster
 Environment=ZOOKEEPER_ENDPOINT=zk://this.mydomain.com:2181
 Environment=HOSTNAME=this.mydomain.com
 Environment=MOUNTPOINT=/home/core/
-'''
+```
 
 * in dockerdata/conf directory, change for your password, this is used for mesos stack auth between nodes.
 * in dockerdata/nginx/conf.d , change the .config, place your hostname
