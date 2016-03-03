@@ -5,7 +5,7 @@ Requires=docker.service
 
 [Service]
 #main
-Environment=MOUNTPOINT=/home/core/dockerdata
+Environment=MOUNTPOINT=<WHERE YOU PUT "dockerdata" FILE>
 
 
 

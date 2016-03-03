@@ -14,7 +14,6 @@ Environment=MOUNTPOINT=<WHERE YOU PUT "dockerdata" FILE>
 Environment=NODE=slave01
 Environment=MASTER_NODE=master01
 Environment=PORT_BIND=5051
-Environment=MOUNTPOINT=/home/core/dockerdata
 Environment=CPU_SHARE=1024
 Environment=MEM_SHARE=1024m
 
