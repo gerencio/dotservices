@@ -1,36 +1,32 @@
 [Unit]
-Description=mesos-master.service
+Description=mesos node for clusters
 After=zookeeper.service
 Requires=zookeeper.service
 
 [Service]
-ExecStartPre=-/usr/bin/docker kill mesos-master
-ExecStartPre=-/usr/bin/docker rm mesos-master
-ExecStartPre=-/usr/bin/docker pull  xdevelsistemas/mesosphere-docker:mesos-master
-ExecStart=/usr/bin/docker run \
-	--rm \
-	--name mesos-master \
-	--net="host" \
-	-p 5050:5050 \
-	-m 500M --memory-swap -1 \
-	-v /home/core/dockerdata/conf/credentials:/credentials:ro  \
-	-v /home/core/dockerdata/mesos-master/hdfs:/tmp/hsperfdata_root \
-	-v /home/core/dockerdata/mesos-master:/tmp/mesos \
-	-v /home/core/config:/config  \
-	-e ZOOKEEPER_DATADIR=/var/lib/zookeeper \
-	-e "MESOS_HOSTNAME=172.31.200.174" \
-	-e "MESOS_IP=172.31.200.174" \
-	-e MESOS_ZK=zk://172.31.200.174:2181/mesos \
-	-e MESOS_PORT=5050 \
-	-e MESOS_QUORUM=1  \
-	-e MESOS_LOG_DIR="/var/log/mesos" \
-	-e "MESOS_CREDENTIALS=/credentials" \
-	-e "MESOS_AUTHENTICATE=true"  \
-	-e "MESOS_AUTHENTICATE_SLAVES=true" \
-	-e MESOS_CLUSTER=ish-cluster \
-	xdevelsistemas/mesosphere-docker:mesos-master 
-ExecStop=/usr/bin/docker stop mesos-master
+
+#main
+Environment=VERONICA_DOCKER_VERSION=0.1
+Environment=CLUSTER=main-mesos
+Environment=ZOOKEEPER_ENDPOINT=zk://bigdata.gerenc.io:2181
+Environment=HOSTNAME=bigdata.gerenc.io
+Environment=MOUNTPOINT=/home/core/dockerdata
+
+#node
+Environment=NODE=master01
+Environment=PORT_BIND=5050
+Environment=CPU_SHARE=250
+Environment=MEM_SHARE=500m
+
+
+
+ExecStartPre=-/usr/bin/docker kill ${CLUSTER}-${NODE}
+ExecStartPre=-/usr/bin/docker rm ${CLUSTER}-${NODE}
+ExecStartPre=-/usr/bin/docker pull  gerencio/veronica-docker:${VERONICA_DOCKER_VERSION}-mesos-master
+ExecStart=/usr/bin/docker run --rm --name ${CLUSTER}-${NODE} -p ${PORT_BIND}:${PORT_BIND} -m ${MEM_SHARE} -c ${CPU_SHARE}  --memory-swap -1 -e MESOS_VERSION=false  -v ${MOUNTPOINT}/${CLUSTER}-${NODE}/hdfs:/tmp/hsperfdata_root -v ${MOUNTPOINT}/${CLUSTER}-${NODE}:/tmp/mesos -v ${MOUNTPOINT}/conf/credentials:/credentials:ro  -e ZOOKEEPER_DATADIR=/var/lib/zookeeper -e MESOS_HOSTNAME=${HOSTNAME}  -e MESOS_ZK=${ZOOKEEPER_ENDPOINT}/${CLUSTER}-${NODE} -e MESOS_PORT=5050 -e MESOS_QUORUM=1  -e MESOS_LOG_DIR="/var/log/mesos" -e "MESOS_AUTHENTICATE=true"  -e "MESOS_AUTHENTICATE_SLAVES=true" -e "MESOS_AUTHENTICATE_FRAMEWORKS=true" -e MESOS_CLUSTER=${CLUSTER} -e MESOS_CREDENTIALS=/crendentials  gerencio/veronica-docker:${VERONICA_DOCKER_VERSION}-mesos-master
+ExecStop=/usr/bin/docker stop ${CLUSTER}-${NODE}
 Restart=always
 
 [Install]
 WantedBy=multi-user.target
+

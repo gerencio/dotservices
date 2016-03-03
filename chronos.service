@@ -1,0 +1,36 @@
+[Unit]
+Description=chronos.service
+After=docker.service
+Requires=docker.service
+
+[Service]
+#main
+Environment=VERONICA_DOCKER_VERSION=0.1
+Environment=CLUSTER=<YOUR CLUSTER NAME>
+Environment=ZOOKEEPER_ENDPOINT=zk://<YOUR-DOMAIN>:2181
+Environment=HOSTNAME=<YOUR-DOMAIN>
+Environment=MOUNTPOINT=<WHERE YOU PUT "dockerdata" FILE>
+
+#node
+Environment=MASTER_NODE=master01
+Environment=PORT_BIND=8080
+Environment=CPU_SHARE=250
+Environment=MEM_SHARE=500m
+
+#chronos
+Environment=MAIL_SERVER_ENDPOINT=email-smtp.us-east-1.amazonaws.com:25
+Environment=MAIL_SERVER_USER=AKIAJZDUH24BCJQR6QQQ
+Environment=MAIL_SERVER_USER_FROM=clayton@xdevel.com.br
+Environment=MAIL_SERVER_USER_FROM=clayton@xdevel.com.br
+Environment=MAIL_SERVER_PASSWORD=AjUhe4DJpUjekRcraOoVPWSpFJTP2S7tHHjAjU/xtdfO
+Environment=SLACK_HOOK_URL=https://hooks.slack.com/services/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
+Environment=MESOS_PRINCIPAL=main
+
+
+ExecStartPre=-/usr/bin/docker kill ${CLUSTER}-chronos
+ExecStartPre=-/usr/bin/docker rm ${CLUSTER}-chronos
+ExecStartPre=-/usr/bin/docker pull  gerencio/veronica-docker:${VERONICA_DOCKER_VERSION}-chronos
+ExecStart=/usr/bin/docker run --name ${CLUSTER}-chronos -v ${MOUNTPOINT}/conf/secret:/secret:ro -e CHRONOS_MESOS_AUTHENTICATION_PRINCIPAL=${MESOS_PRINCIPAL}   -e CHRONOS_MESOS_AUTHENTICATION_SECRET_FILE=/secret -p ${PORT_BIND}:${PORT_BIND}   -e CHRONOS_HOSTNAME=${HOSTNAME}    -e CHRONOS_MASTER=${ZOOKEEPER_ENDPOINT}/${CLUSTER}-${MASTER_NODE} -e CHRONOS_ZK_HOSTS=${ZOOKEEPER_ENDPOINT} -e CHRONOS_HTTP_PORT=${PORT_BIND} -e CHRONOS_SLACK_URL=${SLACK_HOOK_URL}  -e CHRONOS_MAIL_FROM=${MAIL_SERVER_USER_FROM} -e CHRONOS_MAIL_PASSWORD=${MAIL_SERVER_PASSWORD}  -e "CHRONOS_MAIL_SERVER={MAIL_SERVER_ENDPOINT}" -e CHRONOS_MAIL_USER=${MAIL_SERVER_USER}   gerencio/veronica-docker:${VERONICA_DOCKER_VERSION}-chronos
+Restart=always
+[Install]
+WantedBy=multi-user.target

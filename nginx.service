@@ -1,0 +1,28 @@
+[Unit]
+Description=Nginx Service
+Requires=chronos.service mesos-master.service mesos-slave.service
+After=chronos.service mesos-master.service mesos-slave.service
+
+[Service]
+#main
+Environment=MOUNTPOINT=/home/core/dockerdata
+Environment=VERSION=1.9.11
+Environment=CLUSTER=main-mesos
+Environment=MASTER_NODE=master01
+Environment=MASTER_NODE_PORT=5050
+Environment=SLAVE_NODE01=slave01
+Environment=SLAVE_NODE01_PORT=5051
+Environment=CHRONOS_NODE=chronos
+Environment=CHRONOS_NODE_PORT=8080
+
+
+
+
+
+ExecStartPre=-/usr/bin/docker rm nginx
+ExecStart=/usr/bin/docker run -p ${MASTER_NODE_PORT}:${MASTER_NODE_PORT} -p ${SLAVE_NODE01_PORT}:${SLAVE_NODE01_PORT} -p ${CHRONOS_NODE_PORT}:${CHRONOS_NODE_PORT}  --link ${CLUSTER}-${MASTER_NODE} --link ${CLUSTER}-${SLAVE_NODE01} --link ${CLUSTER}-${CHRONOS_NODE}  -v ${MOUNTPOINT}/nginx/conf.d:/etc/nginx/conf.d  nginx:${VERSION}
+ExecStop=/usr/bin/docker stop nginx
+Restart=always
+[Install]
+WantedBy=multi-user.target
+

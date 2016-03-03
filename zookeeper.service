@@ -4,26 +4,19 @@ After=docker.service
 Requires=docker.service
 
 [Service]
+#main
+Environment=MOUNTPOINT=/home/core/dockerdata
+
+
+
+
 ExecStartPre=-/usr/bin/docker kill zookeeper
 ExecStartPre=-/usr/bin/docker rm zookeeper
-ExecStartPre=-/usr/bin/docker pull  xdevelsistemas/mesosphere-docker:mesos-zookeeper
-ExecStart=/usr/bin/docker run \
-		--rm \
-		--name zookeeper \
-		--net="host" \
-		-v /home/core/dockerdata/zookeeper/hdfs:/tmp/hsperfdata_root \
-		-v /home/core/dockerdata/zookeeper/data:/data/zookeeper \
-		-e ZOOKEEPER_DATADIR=/var/lib/zookeeper \
-		-e SERVER_ID=1 \
-		-e ADDITIONAL_ZOOKEEPER_1=server.1=1.1.1.1:2888:3888 \
-		-e ADDITIONAL_ZOOKEEPER_2=server.2=1.1.1.1:2888:3888 \
-		-e ADDITIONAL_ZOOKEEPER_3=server.3=1.1.1.1:2888:3888 -p 2181:2181 -p 2888:2888 -p 3888:3888  \
-		-e ZOOKEEPER_TICK_TIME=2000 \
-		-e ZOOKEEPER_INIT_LIMIT=5 \
-		-e ZOOKEEPER_SYNC_LIMIT=2 \
-		xdevelsistemas/mesosphere-docker:mesos-zookeeper 
+ExecStartPre=-/usr/bin/docker pull  gerencio/veronica-docker:0.1-zookeeper
+ExecStart=/usr/bin/docker run --rm --name zookeeper --net=host   -v ${MOUNTPOINT}/zookeeper/hdfs:/tmp/hsperfdata_root  -v ${MOUNTPOINT}/zookeeper/data:/data/zookeeper  -e ZOOKEEPER_DATADIR=/var/lib/zookeeper  -e SERVER_ID=1  -e ZOOKEEPER_TICK_TIME=2000 -e ZOOKEEPER_INIT_LIMIT=5 -e ZOOKEEPER_SYNC_LIMIT=2   gerencio/veronica-docker:0.1-zookeeper
 ExecStop=-/usr/bin/docker stop zookeeper
 Restart=always
 
 [Install]
 WantedBy=multi-user.target
+

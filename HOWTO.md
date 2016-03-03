@@ -36,7 +36,6 @@ Para despachar as units é bem simples, o comando descrito abaixo roda cada uma 
   # systemctl start zoopkeeper.service
   # systemctl start mesos-master.service
   # systemctl start mesos-slave.service
-  # systemctl start marathon.service
   # systemctl start chronos.service
 ```
 
@@ -48,15 +47,13 @@ Como vamos utilizar apenas uma instância do Zookeeper, este pode ficar do jeito
 #### Mesos Master
 No script mesos master devemos no atentar para as seguintes variáveis de ambiente (são aquelas que são especificados dentro dos parentêses), e para os volumes, pois devemos colocar as credenciais neles.
 
-1. "MESOS\_HOSTNAME": é o nome do Host, nenhum grande impacto, mas serve para diferenciar os hosts; TODO
- 
-2. "MESOS\_IP": é o IP da máquina que está sendo executado o script; TODO
+1. "MESOS\_HOSTNAME": é o nome do Host, ele serve para identificar qual domínio/ip é necessário chamar para alcançar a ui
 
 3. "MESOS\_ZK": É um endereço do Zookeeper, formatado do jeito que está no arquivo. Ele serve para registrar o Mesos no Zookeeper, para ser facilmente acessado depois;
 
 4. "MESOS\_PORT": Porta padrão que o mesos irá expor para se comunicar;
 
-5. "MESOS\_QUORUM": TODO
+5. "MESOS\_QUORUM": Mínimo de recursos (Master) necessários para inicializar o cluster
 
 6. "MESOS\_LOG\_DIR": diretório para aonde será escrito os logs do Mesos;
 
@@ -74,8 +71,6 @@ Muito semelhante ao script do Mesos-Master, algumas diferenças tem que ser cons
 2. **MESOS\_PORT** é uma diferente (no caso 5051) pois estamos executando em uma mesma máquina, caso estejamos executando em máquinas diferentes, não tem nenhum problema ela ser 5050, inclusive, esse é o padrão;
 4. O resto das variáveis de ambiente são otimizadas para rodar no Linux sob o Docker.
 
-#### Marathon
-Deverá se atentar apenas para as variáveis **MARATHON\_HTTP\_PORT** que é a porta que será exposta, para não acontecer nenhum conflito com outra, e o endereço do Mesos-Master, que é descrito em **MARATHON\_MASTER**, que também é um endereço do Zookeeper.
 
 #### Chronos
 Além das considerações acima, deverá também ser levado em conta as variáveis que remetem ao email.

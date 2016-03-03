@@ -1,40 +1,31 @@
-[Unit]
 Description=mesos-slave.service
 After=docker.service
 Requires=docker.service
 
 [Service]
-ExecStartPre=-/usr/bin/docker kill mesos-slave
-ExecStartPre=-/usr/bin/docker rm mesos-slave
-ExecStartPre=-/usr/bin/docker pull xdevelsistemas/mesosphere-docker:mesos-slave
-ExecStart=/usr/bin/docker run \
-	--name mesos-slave \
-	--privileged \
-	--net="host" \
-	-v /home/core/dockerdata/conf/credentials:/credentials:ro \
-	-v /home/core/.docker:/root/.docker  \
-	-v /usr/lib64/libdevmapper.so.1.02:/usr/lib/libdevmapper.so.1.02 \
-	-v /var/run/docker.sock:/var/run/docker.sock \
-	-v /usr/bin/docker:/usr/local/bin/docker \
-	-v /sys/fs/cgroup:/host/sys/fs/cgroup  \
-	-e ZOOKEEPER_DATADIR=/var/lib/zookeeper  \
-	-e "MESOS_IP=172.31.200.175"  \
-	-e "MESOS_CREDENTIAL=/credentials"   \
-	-e MESOS_ZK=zk://172.31.200.174:2181/slave1  \
-	-e MESOS_PORT=5051  \
-	-e MESOS_LOG_DIR=/var/log/slave  \
-	-e MESOS_MASTER=zk://172.31.200.174:2181/mesos  \
-	-e MESOS_LOG_DIR="/var/log/mesos"  \
-	-e MESOS_CGROUP_HIERARCHY="/host/sys/fs/cgroup"   \
-	-e MESOS_LAUNCHER=posix  \
-	-e MESOS_CONTAINERIZERS="mesos,docker"  \
-	-e MESOS_QUORUM=1  \
-	-e MESOS_CLUSTER=main-cluster \
-	-e MESOS_EXECUTOR_REGISTRATION_TIMEOUT=3mins \
-	xdevelsistemas/mesosphere-docker:mesos-slave
+#main
+Environment=VERONICA_DOCKER_VERSION=0.1
+Environment=CLUSTER=main-mesos
+Environment=ZOOKEEPER_ENDPOINT=zk://bigdata.gerenc.io:2181
+Environment=HOSTNAME=bigdata.gerenc.io
+Environment=MOUNTPOINT=/home/core/dockerdata
 
-ExecStop=/usr/bin/docker stop mesos-slave
+#node
+Environment=NODE=slave01
+Environment=MASTER_NODE=master01
+Environment=PORT_BIND=5051
+Environment=MOUNTPOINT=/home/core/dockerdata
+Environment=CPU_SHARE=1024
+Environment=MEM_SHARE=1024m
+
+
+ExecStartPre=-/usr/bin/docker kill ${CLUSTER}-${NODE}
+ExecStartPre=-/usr/bin/docker rm ${CLUSTER}-${NODE}
+ExecStartPre=-/usr/bin/docker pull  gerencio/veronica-docker:${VERONICA_DOCKER_VERSION}-mesos-slave
+ExecStart=/usr/bin/docker run   --name ${CLUSTER}-${NODE} --privileged -p ${PORT_BIND}:${PORT_BIND} -m ${MEM_SHARE} -c ${CPU_SHARE} -v ${MOUNTPOINT}/conf/credentials:/credentials:ro -v /home/core/.docker:/root/.docker  -v /usr/lib64/libdevmapper.so.1.02:/usr/lib/libdevmapper.so.1.02 -v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/local/bin/docker -v /sys/fs/cgroup:/host/sys/fs/cgroup -e MESOS_CREDENTIAL=/credentials -e ZOOKEEPER_DATADIR=/var/lib/zookeeper -e MESOS_ZK=${ZOOKEEPER_ENDPOINT}/${CLUSTER}-${MASTER_NODE} -e MESOS_PORT=${PORT_BIND} -e MESOS_LOG_DIR=/var/log/slave -e MESOS_MASTER=${ZOOKEEPER_ENDPOINT}/${CLUSTER}-${MASTER_NODE} -e  MESOS_LOG_DIR="/var/log/mesos" -e MESOS_CGROUP_HIERARCHY="/host/sys/fs/cgroup"  -e MESOS_LAUNCHER=posix -e MESOS_CONTAINERIZERS="mesos,docker" -e MESOS_QUORUM=1 -e MESOS_CLUSTER=${CLUSTER} -e MESOS_HOSTNAME=${HOSTNAME} -e MESOS_EXECUTOR_REGISTRATION_TIMEOUT=3mins -e MESOS_VERSION=false  gerencio/veronica-docker:${VERONICA_DOCKER_VERSION}-mesos-slave
+ExecStop=/usr/bin/docker stop ${CLUSTER}-${NODE}
 Restart=always
 
 [Install]
 WantedBy=multi-user.target
+
