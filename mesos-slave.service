@@ -5,10 +5,10 @@ Requires=docker.service
 [Service]
 #main
 Environment=VERONICA_DOCKER_VERSION=0.1
-Environment=CLUSTER=main-mesos
-Environment=ZOOKEEPER_ENDPOINT=zk://bigdata.gerenc.io:2181
-Environment=HOSTNAME=bigdata.gerenc.io
-Environment=MOUNTPOINT=/home/core/dockerdata
+Environment=CLUSTER=<YOUR CLUSTER NAME>
+Environment=ZOOKEEPER_ENDPOINT=zk://<YOUR-DOMAIN>:2181
+Environment=HOSTNAME=<YOUR-DOMAIN>
+Environment=MOUNTPOINT=<WHERE YOU PUT "dockerdata" FILE>
 
 #node
 Environment=NODE=slave01
