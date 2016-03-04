@@ -18,12 +18,11 @@ Environment=CPU_SHARE=250
 Environment=MEM_SHARE=500m
 
 #chronos
-Environment=MAIL_SERVER_ENDPOINT=email-smtp.us-east-1.amazonaws.com:25
-Environment=MAIL_SERVER_USER=AKIAJZDUH24BCJQR6QQQ
-Environment=MAIL_SERVER_USER_FROM=clayton@xdevel.com.br
-Environment=MAIL_SERVER_USER_FROM=clayton@xdevel.com.br
-Environment=MAIL_SERVER_PASSWORD=AjUhe4DJpUjekRcraOoVPWSpFJTP2S7tHHjAjU/xtdfO
-Environment=SLACK_HOOK_URL=https://hooks.slack.com/services/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
+Environment=MAIL_SERVER_ENDPOINT=<YOUR SERVER ENDPOINT>
+Environment=MAIL_SERVER_USER=<YOUR USER>
+Environment=MAIL_SERVER_USER_FROM=<YOUR EMAIL>
+Environment=MAIL_SERVER_PASSWORD=<YOUR PASSWORD>
+Environment=SLACK_HOOK_URL=<YOUR WEBHOOK>
 Environment=MESOS_PRINCIPAL=main
 
 
