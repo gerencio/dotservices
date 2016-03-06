@@ -31,6 +31,10 @@ Environment=MOUNTPOINT=/home/core/
 ```
 
 * in dockerdata/conf directory, change for your password, this is used for mesos stack auth between nodes.
+
+	we use mesos-authentication, because the master node communicate betw
+
+
 * in dockerdata/nginx/conf.d , change the .config, place your hostname
 * in dockerdata/nginx/conf.d, create your .htpassword file. 
 
